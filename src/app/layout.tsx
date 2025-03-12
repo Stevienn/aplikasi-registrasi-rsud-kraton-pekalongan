@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inria_Sans, Inter } from "next/font/google";
 import "./globals.css";
 
 const interSans = Inter({
   variable: "--font-inter-sans",
+  subsets: ["latin"],
+});
+
+const inriaSans = Inria_Sans({
+  weight: ["300", "400", "700"],
+  variable: "--font-inria-sans",
   subsets: ["latin"],
 });
 
@@ -19,7 +25,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${interSans.variable}  antialiased`}>{children}</body>
+      <body
+        className={`${interSans.variable} ${inriaSans.variable}  antialiased`}
+      >
+        {children}
+      </body>
     </html>
   );
 }

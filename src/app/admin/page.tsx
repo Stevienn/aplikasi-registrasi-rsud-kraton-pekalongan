@@ -1,7 +1,8 @@
+import LoginPage from "@/components/pages/LoginPage";
 import React from "react";
 
 const Admin = () => {
-  return <div>Admin</div>;
+  return <LoginPage isAdmin={true} />;
 };
 
 export default Admin;
