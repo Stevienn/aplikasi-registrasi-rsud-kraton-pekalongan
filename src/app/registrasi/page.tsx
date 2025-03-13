@@ -9,11 +9,19 @@ import dayjs from "dayjs";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import dummyPatient from "@/components/assets/dummyPatient";
+
 const Registrasi = () => {
   const router = useRouter();
 
+  const [dataPatient, setDataPatient] = useState(dummyPatient);
+
+  const [name, setName] = useState("");
+  const [bpjs, setBpjs] = useState("");
   const [gender, setGender] = useState("");
   const [birth, setBirth] = React.useState(dayjs(""));
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
 
   console.log(birth.format("DD-MM-YYYY"));
 
@@ -30,6 +38,8 @@ const Registrasi = () => {
           type="text"
           placeholder="ex: Putri Aviarta"
           customClass="w-[900px] mb-[10px]"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
         {/* No BPJS */}
         <InputField

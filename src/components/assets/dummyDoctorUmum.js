@@ -6,8 +6,10 @@ let dummyDoctorUmum = [
     password: "2singgit",
     specialty: "Dokter Umum",
     senin: {
-      jam_praktek: "08.00-12.00",
-      total_jam: 4,
+      jam_praktek_a: "08.00-12.00",
+      total_jam_a: 4,
+      jam_praktek_b: "15.00-20.00",
+      total_jam_b: 4,
       pasien: [],
     },
     selasa: {
