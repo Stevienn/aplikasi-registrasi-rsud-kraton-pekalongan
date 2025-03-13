@@ -23,10 +23,54 @@ const Registrasi = () => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
 
+  const [isWarningBpjs, setIsWarningBpjs] = useState("");
+  const [isWarningEmail, setIsWarningEmail] = useState("");
+  const [isWarningPhone, setIsWarningPhone] = useState("");
+
   console.log(birth.format("DD-MM-YYYY"));
 
   const handleGender = (event) => {
     setGender(event.target.value);
+  };
+
+  const handleValidation = (name, bpjs, email, phone, birth, gender) => {
+    setIsWarningBpjs("");
+    setIsWarningEmail("");
+    setIsWarningPhone("");
+
+    const isRegistered = dataPatient.find((data) => bpjs == data.id);
+    const isEmailRegistered = dataPatient.find((data) => email == data.email);
+    const isPhoneRegistered = dataPatient.find((data) => phone == data.phone);
+
+    const birthDate = birth.format("DD-MM-YYYY");
+
+    if (isRegistered) {
+      setIsWarningBpjs("No BPJS sudah terdaftar, silahkan melakukan login !");
+      return;
+    }
+    if (isPhoneRegistered) {
+      setIsWarningPhone(
+        "Nomor handphone sudah terdaftar, silahkan memasukkan nomor lain !"
+      );
+    }
+    if (isEmailRegistered) {
+      setIsWarningEmail(
+        "Email sudah terdaftar, silahkan memasukkan alamat email lain !"
+      );
+    }
+    if (!isRegistered && !isEmailRegistered && !isPhoneRegistered) {
+      const newPatient = {
+        id: bpjs,
+        nama: name,
+        gender: gender,
+        birth: birthDate,
+        phone: phone,
+        email: email,
+      };
+      dummyPatient.push(newPatient);
+      router.push("/pilih-dokter");
+      console.log(dummyPatient);
+    }
   };
 
   return (
@@ -37,7 +81,8 @@ const Registrasi = () => {
           name="Nama (Sesuai KTP)"
           type="text"
           placeholder="ex: Putri Aviarta"
-          customClass="w-[900px] mb-[10px]"
+          customClass="mb-[10px]"
+          inputWidth="w-[900px]"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -46,7 +91,11 @@ const Registrasi = () => {
           name="No BPJS"
           type="text"
           placeholder="ex: 1252****"
-          customClass="w-[900px] mb-[10px]"
+          customClass="mb-[10px]"
+          inputWidth="w-[900px]"
+          value={bpjs}
+          onChange={(e) => setBpjs(e.target.value)}
+          isWarning={isWarningBpjs}
         />
         {/* Jenis Kelamin */}
         <div className="mb-[10px]">
@@ -81,14 +130,22 @@ const Registrasi = () => {
           name="Nomor Handphone"
           type="text"
           placeholder="ex: 081212345678"
-          customClass="w-[900px] mb-[10px]"
+          customClass="mb-[10px]"
+          inputWidth="w-[900px]"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          isWarning={isWarningPhone}
         />
         {/* Email */}
         <InputField
           name="Email"
           type="email"
           placeholder="ex: stevenharta@mail.com"
-          customClass="w-[900px] mb-[10px]"
+          customClass="mb-[10px]"
+          inputWidth="w-[900px]"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          isWarning={isWarningEmail}
         />
         <div className="flex justify-end gap-[25px] mt-[75px]">
           <Button
@@ -98,7 +155,9 @@ const Registrasi = () => {
           />
           <Button
             placeholder="Daftar"
-            onClick={() => alert("SABAR BANG BELUM JADI")}
+            onClick={() =>
+              handleValidation(name, bpjs, email, phone, birth, gender)
+            }
           />
         </div>
       </div>
