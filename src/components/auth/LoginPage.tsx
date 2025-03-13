@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import { useRouter } from "next/navigation";
 
 import dummyPatient from "@/components/assets/dummyPatient";
+import dummyDoctorUmum from "@/components/assets/dummyDoctorUmum";
 
 interface ILoginPageProps {
   isAdmin?: boolean;
@@ -20,24 +21,48 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
   const router = useRouter();
 
   const [dataPatient, setDataPatient] = useState(dummyPatient);
-  const [input, setInput] = useState("");
+  const [doctorUmum, setDoctorUmum] = useState(dummyDoctorUmum);
 
-  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(event.target.value);
+  const [input, setInput] = useState("");
+  const [validate, setValidate] = useState("");
+  const [isWarningInput, setIsWarningInput] = useState("");
+  const [isWarningValidate, setIsWarningValidate] = useState("");
+
+  const handleValidationPatient = (input, validate) => {
+    setIsWarningInput("");
+    setIsWarningValidate("");
+
+    const patientData = dataPatient.find((data) => input == data.id);
+
+    if (patientData) {
+      if (input == patientData.id && validate == patientData.nama) {
+        router.push("/pilih-dokter");
+      } else if (input == patientData.id && validate !== patientData.nama) {
+        setIsWarningValidate("Nama yang anda masukkan tidak sesuai");
+      }
+    } else if (!patientData) {
+      setIsWarningInput("No BPJS belum terdaftar !");
+    }
   };
 
-  useEffect(() => {
-    console.log(input);
-  }, [input]);
+  const handleValidationAdmin = (input, validate) => {
+    setIsWarningInput("");
+    setIsWarningValidate("");
 
-  const handleValidationPatient = (input) => {
-    {
-      dataPatient.map((data, i) => {
-        if (input === data.id) {
-        }
-      });
+    const doctorData = doctorUmum.find((data) => input == data.email);
+
+    if (doctorData) {
+      if (input == doctorData.email && validate == doctorData.password) {
+        router.push("/");
+      } else if (
+        input == doctorData.email &&
+        validate !== doctorData.password
+      ) {
+        setIsWarningValidate("Password yang anda masukkan salah");
+      }
+    } else if (!doctorData) {
+      setIsWarningInput("Email yang anda masukkan salah !");
     }
-    router.push("/pilih-dokter");
   };
 
   return (
@@ -68,18 +93,22 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
                   placeholder="ex: chiesamutiara@gmail.com"
                   customClass="w-[530px] mb-[30px]"
                   value={input}
-                  onChange={handleInput}
+                  onChange={(e) => setInput(e.target.value)}
+                  isWarning={isWarningInput}
                 />
                 <InputField
                   name="Password"
                   type="password"
                   placeholder="********"
                   customClass="w-[530px] mb-[30px]"
+                  value={validate}
+                  onChange={(e) => setValidate(e.target.value)}
+                  isWarning={isWarningValidate}
                 />
               </div>
               <Button
                 placeholder="Masuk"
-                onClick={() => alert("validation need backend")}
+                onClick={() => handleValidationAdmin(input, validate)}
               />
             </>
           ) : (
@@ -91,18 +120,22 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
                   placeholder="ex: 000125xxx"
                   customClass="w-[530px] mb-[30px]"
                   value={input}
-                  onChange={handleInput}
+                  onChange={(e) => setInput(e.target.value)}
+                  isWarning={isWarningInput}
                 />
                 <InputField
                   name="Nama (Sesuai KTP)"
                   type="text"
                   placeholder="ex: Kevin Safaat"
                   customClass="w-[530px] mb-[30px]"
+                  value={validate}
+                  onChange={(e) => setValidate(e.target.value)}
+                  isWarning={isWarningValidate}
                 />
               </div>
               <Button
                 placeholder="Masuk"
-                onClick={() => handleValidationPatient(input)}
+                onClick={() => handleValidationPatient(input, validate)}
               />
               <div className="flex mt-[10px]">
                 <p className="text-blue-primary font-semibold">

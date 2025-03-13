@@ -7,6 +7,7 @@ interface IInputProps {
   customClass: string;
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  isWarning?: string;
 }
 
 const InputField = ({
@@ -16,6 +17,7 @@ const InputField = ({
   customClass,
   value,
   onChange,
+  isWarning,
 }: IInputProps) => {
   return (
     <>
@@ -27,6 +29,11 @@ const InputField = ({
         value={value}
         onChange={onChange}
       />
+      {isWarning && (
+        <p className="text-red-500 mt-[-30px] text-[13px] mb-[15px]">
+          {isWarning}
+        </p>
+      )}
     </>
   );
 };
