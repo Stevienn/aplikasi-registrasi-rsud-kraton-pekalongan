@@ -9,7 +9,7 @@ let dummyPatient = [
   },
   {
     id: 78910,
-    nama: "Steven Hartanto",
+    nama: "Steven muhammad",
     gender: "Pria",
     birth: "19-06-2003",
     hp: "087743861672",
