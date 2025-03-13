@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import Image from "next/image";
 import RumahSakit from "../../../public/images/RumahSakit.jpg";
@@ -34,14 +34,14 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
 
     const patientData = dataPatient.find((data) => input == data.id);
 
-    if (patientData) {
+    if (!patientData) {
+      setIsWarningInput("No BPJS belum terdaftar !");
+    } else {
       if (input == patientData.id && validate == patientData.nama) {
         router.push("/pilih-dokter");
       } else if (input == patientData.id && validate !== patientData.nama) {
         setIsWarningValidate("Nama yang anda masukkan tidak sesuai");
       }
-    } else if (!patientData) {
-      setIsWarningInput("No BPJS belum terdaftar !");
     }
   };
 
@@ -91,7 +91,8 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
                   name="Email"
                   type="email"
                   placeholder="ex: chiesamutiara@gmail.com"
-                  customClass="w-[530px] mb-[30px]"
+                  customClass="mb-[30px]"
+                  inputWidth="w-[530px]"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   isWarning={isWarningInput}
@@ -100,7 +101,8 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
                   name="Password"
                   type="password"
                   placeholder="********"
-                  customClass="w-[530px] mb-[30px]"
+                  customClass="mb-[30px]"
+                  inputWidth="w-[530px]"
                   value={validate}
                   onChange={(e) => setValidate(e.target.value)}
                   isWarning={isWarningValidate}
@@ -118,7 +120,8 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
                   name="No BPJS"
                   type="text"
                   placeholder="ex: 000125xxx"
-                  customClass="w-[530px] mb-[30px]"
+                  customClass="mb-[30px]"
+                  inputWidth="w-[530px]"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   isWarning={isWarningInput}
@@ -127,7 +130,8 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
                   name="Nama (Sesuai KTP)"
                   type="text"
                   placeholder="ex: Kevin Safaat"
-                  customClass="w-[530px] mb-[30px]"
+                  customClass="mb-[30px]"
+                  inputWidth="w-[530px]"
                   value={validate}
                   onChange={(e) => setValidate(e.target.value)}
                   isWarning={isWarningValidate}
