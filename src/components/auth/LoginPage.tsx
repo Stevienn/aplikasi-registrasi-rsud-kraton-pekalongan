@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
 import RumahSakit from "../../../public/images/RumahSakit.jpg";
@@ -10,12 +10,36 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import { useRouter } from "next/navigation";
 
+import dummyPatient from "@/components/assets/dummyPatient";
+
 interface ILoginPageProps {
   isAdmin?: boolean;
 }
 
 const LoginPage = ({ isAdmin }: ILoginPageProps) => {
   const router = useRouter();
+
+  const [dataPatient, setDataPatient] = useState(dummyPatient);
+  const [input, setInput] = useState("");
+
+  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(event.target.value);
+  };
+
+  useEffect(() => {
+    console.log(input);
+  }, [input]);
+
+  const handleValidationPatient = (input) => {
+    {
+      dataPatient.map((data, i) => {
+        if (input === data.id) {
+        }
+      });
+    }
+    router.push("/pilih-dokter");
+  };
+
   return (
     <div className="grid grid-cols-2 font-inter-sans">
       <div>
@@ -43,6 +67,8 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
                   type="email"
                   placeholder="ex: chiesamutiara@gmail.com"
                   customClass="w-[530px] mb-[30px]"
+                  value={input}
+                  onChange={handleInput}
                 />
                 <InputField
                   name="Password"
@@ -64,6 +90,8 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
                   type="text"
                   placeholder="ex: 000125xxx"
                   customClass="w-[530px] mb-[30px]"
+                  value={input}
+                  onChange={handleInput}
                 />
                 <InputField
                   name="Nama (Sesuai KTP)"
@@ -74,7 +102,7 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
               </div>
               <Button
                 placeholder="Masuk"
-                onClick={() => router.push("/pilih-dokter")}
+                onClick={() => handleValidationPatient(input)}
               />
               <div className="flex mt-[10px]">
                 <p className="text-blue-primary font-semibold">
