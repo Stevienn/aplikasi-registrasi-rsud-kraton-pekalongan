@@ -8,10 +8,11 @@ import InputField from "@/components/form/InputField";
 import Button from "@/components/form/Button";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 import dummyPatient from "@/components/assets/dummyPatient";
 import dummyDoctorUmum from "@/components/assets/dummyDoctorUmum";
+import { login } from "./lib";
 
 interface ILoginPageProps {
   isAdmin?: boolean;
@@ -22,13 +23,12 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
 
   const [dataPatient, setDataPatient] = useState(dummyPatient);
   const [doctorUmum, setDoctorUmum] = useState(dummyDoctorUmum);
-
   const [input, setInput] = useState("");
   const [validate, setValidate] = useState("");
   const [isWarningInput, setIsWarningInput] = useState("");
   const [isWarningValidate, setIsWarningValidate] = useState("");
 
-  const handleValidationPatient = (input, validate) => {
+  const handleValidationPatient = async (input, validate) => {
     setIsWarningInput("");
     setIsWarningValidate("");
 
@@ -38,7 +38,7 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
       setIsWarningInput("No BPJS belum terdaftar !");
     } else {
       if (input == patientData.id && validate == patientData.nama) {
-        router.push("/pilih-dokter");
+        await login({ patientData });
       } else if (input == patientData.id && validate !== patientData.nama) {
         setIsWarningValidate("Nama yang anda masukkan tidak sesuai");
       }
@@ -86,7 +86,7 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
               <h1 className="font-light text-[32px] mt-[-10px] mb-[15px] text-blue-primary">
                 PORTAL ADMIN
               </h1>
-              <div>
+              <form>
                 <InputField
                   name="Email"
                   type="email"
@@ -107,11 +107,12 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
                   onChange={(e) => setValidate(e.target.value)}
                   isWarning={isWarningValidate}
                 />
-              </div>
-              <Button
-                placeholder="Masuk"
-                onClick={() => handleValidationAdmin(input, validate)}
-              />
+
+                <Button
+                  placeholder="Masuk"
+                  onClick={() => handleValidationAdmin(input, validate)}
+                />
+              </form>
             </>
           ) : (
             <>
@@ -136,11 +137,12 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
                   onChange={(e) => setValidate(e.target.value)}
                   isWarning={isWarningValidate}
                 />
+
+                <Button
+                  placeholder="Masuk"
+                  onClick={() => handleValidationPatient(input, validate)}
+                />
               </div>
-              <Button
-                placeholder="Masuk"
-                onClick={() => handleValidationPatient(input, validate)}
-              />
               <div className="flex mt-[10px]">
                 <p className="text-blue-primary font-semibold">
                   {"Belum pernah mendaftar? Silahkan melakukan "}
