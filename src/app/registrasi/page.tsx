@@ -10,6 +10,16 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import dummyPatient from "@/components/assets/dummyPatient";
+import Modal from "@/components/Modal";
+
+interface IValidationProps {
+  name: string;
+  bpjs: number;
+  email: string;
+  phone: string;
+  birth: string;
+  gender: string;
+}
 
 const Registrasi = () => {
   const router = useRouter();
@@ -17,9 +27,9 @@ const Registrasi = () => {
   const [dataPatient, setDataPatient] = useState(dummyPatient);
 
   const [name, setName] = useState("");
-  const [bpjs, setBpjs] = useState("");
+  const [bpjs, setBpjs] = useState<number>();
   const [gender, setGender] = useState("");
-  const [birth, setBirth] = React.useState(dayjs(""));
+  const [birth, setBirth] = useState<string>(dayjs("").format());
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
 
@@ -27,22 +37,20 @@ const Registrasi = () => {
   const [isWarningEmail, setIsWarningEmail] = useState("");
   const [isWarningPhone, setIsWarningPhone] = useState("");
 
-  console.log(birth.format("DD-MM-YYYY"));
+  const [isModal, setIsModal] = useState(false);
 
   const handleGender = (event) => {
     setGender(event.target.value);
   };
 
-  const handleValidation = (name, bpjs, email, phone, birth, gender) => {
+  const handleValidation = ({ bpjs, email, phone }: IValidationProps) => {
     setIsWarningBpjs("");
     setIsWarningEmail("");
     setIsWarningPhone("");
 
     const isRegistered = dataPatient.find((data) => bpjs == data.id);
-    const isEmailRegistered = dataPatient.find((data) => email == data.email);
-    const isPhoneRegistered = dataPatient.find((data) => phone == data.phone);
-
-    const birthDate = birth.format("DD-MM-YYYY");
+    const isEmailRegistered = dataPatient.find((data) => email === data.email);
+    const isPhoneRegistered = dataPatient.find((data) => phone === data.phone);
 
     if (isRegistered) {
       setIsWarningBpjs("No BPJS sudah terdaftar, silahkan melakukan login !");
@@ -59,109 +67,201 @@ const Registrasi = () => {
       );
     }
     if (!isRegistered && !isEmailRegistered && !isPhoneRegistered) {
-      const newPatient = {
-        id: bpjs,
-        nama: name,
-        gender: gender,
-        birth: birthDate,
-        phone: phone,
-        email: email,
-      };
-      dummyPatient.push(newPatient);
-      router.push("/pilih-dokter");
+      setIsModal(true);
+      // router.push("/pilih-dokter");
       console.log(dummyPatient);
     }
   };
 
-  return (
-    <FormLayout title="Selamat Datang !">
-      <div>
-        {/* Nama */}
-        <InputField
-          name="Nama (Sesuai KTP)"
-          type="text"
-          placeholder="ex: Putri Aviarta"
-          customClass="mb-[10px]"
-          inputWidth="w-[900px]"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        {/* No BPJS */}
-        <InputField
-          name="No BPJS"
-          type="text"
-          placeholder="ex: 1252****"
-          customClass="mb-[10px]"
-          inputWidth="w-[900px]"
-          value={bpjs}
-          onChange={(e) => setBpjs(e.target.value)}
-          isWarning={isWarningBpjs}
-        />
-        {/* Jenis Kelamin */}
-        <div className="mb-[10px]">
-          <p className="font-semibold text-gray-700 mb-[8px]">Jenis Kelamin</p>
-          <input
-            type="radio"
-            id="Pria"
-            name="Jenis Kelamin"
-            value="Pria"
-            onChange={handleGender}
-          />
-          <label className="ml-[5px] mr-[15px]">Pria</label>
-          <input
-            type="radio"
-            id="Wanita"
-            name="Jenis Kelamin"
-            value="Wanita"
-            onChange={handleGender}
-          />
-          <label className="ml-[5px] mr-[15px]">Wanita</label>
-        </div>
-        {/* Tanggal Lahir */}
-        <div className="mb-[10px]">
-          <p className="font-semibold text-gray-700 mb-[8px]">Tanggal Lahir</p>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker onChange={(newValue) => setBirth(newValue)} />
-          </LocalizationProvider>
-        </div>
+  const handleSubmit = ({
+    name,
+    bpjs,
+    email,
+    phone,
+    birth,
+    gender,
+  }: IValidationProps) => {
+    const birthDate = birth.format("DD-MM-YYYY");
+    const newPatient = {
+      id: bpjs,
+      nama: name,
+      gender: gender,
+      birth: birthDate,
+      phone: phone,
+      email: email,
+    };
+    dummyPatient.push(newPatient);
+    setIsModal(false);
+    router.push("/pilih-dokter");
+    console.log(dummyPatient);
+  };
 
-        {/* Nomor Handphone */}
-        <InputField
-          name="Nomor Handphone"
-          type="text"
-          placeholder="ex: 081212345678"
-          customClass="mb-[10px]"
-          inputWidth="w-[900px]"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          isWarning={isWarningPhone}
-        />
-        {/* Email */}
-        <InputField
-          name="Email"
-          type="email"
-          placeholder="ex: stevenharta@mail.com"
-          customClass="mb-[10px]"
-          inputWidth="w-[900px]"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          isWarning={isWarningEmail}
-        />
-        <div className="flex justify-end gap-[25px] mt-[75px]">
-          <Button
-            isCancel
-            placeholder="Kembali"
-            onClick={() => router.push("/")}
+  return (
+    <>
+      <div id="shared-modal"></div>
+      {isModal && (
+        <Modal onClose={() => setIsModal(false)} width="w-[888px]">
+          <Modal.Header title="Apakah data diri sudah sesuai ?"></Modal.Header>
+          <Modal.Body>
+            <div>
+              <InputField
+                name="Nama (Sesuai KTP) "
+                type="text"
+                customClass="mb-[15px]"
+                inputWidth="w-full"
+                value={name}
+                isDisabled={true}
+              />
+              <InputField
+                name="No BPJS"
+                type="text"
+                customClass="mb-[15px]"
+                inputWidth="w-full"
+                value={bpjs}
+                isDisabled={true}
+              />
+              <InputField
+                name="Gender"
+                type="text"
+                customClass="mb-[15px]"
+                inputWidth="w-full"
+                value={gender}
+                isDisabled={true}
+              />
+              <InputField
+                name="Tanggal Lahir"
+                type="text"
+                customClass="mb-[15px]"
+                inputWidth="w-full"
+                value={birth.format("DD-MM-YYYY")}
+                isDisabled={true}
+              />
+              <InputField
+                name="Nomor Handphone"
+                type="text"
+                customClass="mb-[15px]"
+                inputWidth="w-full"
+                value={phone}
+                isDisabled={true}
+              />
+              <InputField
+                name="Email"
+                type="email"
+                customClass="mb-[15px]"
+                inputWidth="w-full"
+                value={email}
+                isDisabled={true}
+              />
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              isCancel
+              placeholder="Kembali"
+              onClick={() => setIsModal(false)}
+            />
+            <Button
+              placeholder="Daftar"
+              onClick={() =>
+                handleSubmit({ name, bpjs, email, phone, birth, gender })
+              }
+            />
+          </Modal.Footer>
+        </Modal>
+      )}
+      <FormLayout title="Selamat Datang !">
+        <div>
+          {/* Nama */}
+          <InputField
+            name="Nama (Sesuai KTP)"
+            type="text"
+            placeholder="ex: Putri Aviarta"
+            customClass="mb-[10px]"
+            inputWidth="w-[900px]"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
-          <Button
-            placeholder="Daftar"
-            onClick={() =>
-              handleValidation(name, bpjs, email, phone, birth, gender)
-            }
+          {/* No BPJS */}
+          <InputField
+            name="No BPJS"
+            type="number"
+            placeholder="ex: 1252****"
+            customClass="mb-[10px]"
+            inputWidth="w-[900px]"
+            value={bpjs}
+            onChange={(e) => setBpjs(parseInt(e.target.value))}
+            isWarning={isWarningBpjs}
           />
+          {/* Jenis Kelamin */}
+          <div className="mb-[10px]">
+            <p className="font-semibold text-gray-700 mb-[8px]">
+              Jenis Kelamin
+            </p>
+            <input
+              type="radio"
+              id="Pria"
+              name="Jenis Kelamin"
+              value="Pria"
+              onChange={handleGender}
+            />
+            <label className="ml-[5px] mr-[15px]">Pria</label>
+            <input
+              type="radio"
+              id="Wanita"
+              name="Jenis Kelamin"
+              value="Wanita"
+              onChange={handleGender}
+            />
+            <label className="ml-[5px] mr-[15px]">Wanita</label>
+          </div>
+          {/* Tanggal Lahir */}
+          <div className="mb-[10px]">
+            <p className="font-semibold text-gray-700 mb-[8px]">
+              Tanggal Lahir
+            </p>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker onChange={(newValue) => setBirth(newValue)} />
+            </LocalizationProvider>
+          </div>
+
+          {/* Nomor Handphone */}
+          <InputField
+            name="Nomor Handphone"
+            type="text"
+            placeholder="ex: 081212345678"
+            customClass="mb-[10px]"
+            inputWidth="w-[900px]"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            isWarning={isWarningPhone}
+          />
+          {/* Email */}
+          <InputField
+            name="Email"
+            type="email"
+            placeholder="ex: stevenharta@mail.com"
+            customClass="mb-[10px]"
+            inputWidth="w-[900px]"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            isWarning={isWarningEmail}
+          />
+          <div className="flex justify-end gap-[25px] mt-[75px]">
+            <Button
+              isCancel
+              placeholder="Kembali"
+              onClick={() => router.push("/")}
+            />
+            <Button
+              placeholder="Daftar"
+              onClick={() =>
+                handleValidation({ name, bpjs, email, phone, birth, gender })
+              }
+            />
+          </div>
         </div>
-      </div>
-    </FormLayout>
+      </FormLayout>
+    </>
   );
 };
 
