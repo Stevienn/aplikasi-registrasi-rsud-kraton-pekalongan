@@ -3,12 +3,13 @@ import React from "react";
 interface IInputProps {
   name: string;
   type: string;
-  placeholder: string;
+  placeholder?: string;
   customClass?: string;
   inputWidth?: string;
-  value: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  value: string | number;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isWarning?: string;
+  isDisabled?: boolean;
 }
 
 const InputField = ({
@@ -20,6 +21,7 @@ const InputField = ({
   value,
   onChange,
   isWarning,
+  isDisabled,
 }: IInputProps) => {
   return (
     <div className={`${isWarning ? "" : customClass}`}>
@@ -30,6 +32,7 @@ const InputField = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        disabled={isDisabled}
       />
       {isWarning && (
         <p className="text-red-500 text-[13px] mb-[15px]">{isWarning}</p>
