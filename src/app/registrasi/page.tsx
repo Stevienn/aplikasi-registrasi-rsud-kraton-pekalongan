@@ -7,7 +7,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 import dummyPatient from "@/components/assets/dummyPatient";
 import Modal from "@/components/Modal";
@@ -22,8 +22,6 @@ interface IValidationProps {
 }
 
 const Registrasi = () => {
-  const router = useRouter();
-
   const [dataPatient, setDataPatient] = useState(dummyPatient);
 
   const [name, setName] = useState("");
@@ -37,7 +35,8 @@ const Registrasi = () => {
   const [isWarningEmail, setIsWarningEmail] = useState("");
   const [isWarningPhone, setIsWarningPhone] = useState("");
 
-  const [isModal, setIsModal] = useState(false);
+  const [isModalConfirm, setIsModalConfirm] = useState(false);
+  const [isModalLogin, setIsModalLogin] = useState(false);
 
   const handleGender = (event) => {
     setGender(event.target.value);
@@ -67,8 +66,7 @@ const Registrasi = () => {
       );
     }
     if (!isRegistered && !isEmailRegistered && !isPhoneRegistered) {
-      setIsModal(true);
-      // router.push("/pilih-dokter");
+      setIsModalConfirm(true);
       console.log(dummyPatient);
     }
   };
@@ -91,17 +89,32 @@ const Registrasi = () => {
       email: email,
     };
     dummyPatient.push(newPatient);
-    setIsModal(false);
-    router.push("/pilih-dokter");
+    setIsModalLogin(true);
+
     console.log(dummyPatient);
   };
 
   return (
     <>
       <div id="shared-modal"></div>
-      {isModal && (
-        <Modal onClose={() => setIsModal(false)} width="w-[888px]">
-          <Modal.Header title="Apakah data diri sudah sesuai ?"></Modal.Header>
+      {isModalLogin && (
+        <Modal onClose={() => setIsModalLogin(false)} width="w-[888px]">
+          <Modal.Header title="RSUD Kraton Pekalongan" />
+          <Modal.Body>
+            <div>
+              <p className="font-medium text-[18px]">
+                Registrasi berhasil, Silahkan melakukan Login !
+              </p>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button placeholder="Login" onClick={() => redirect("/")} />
+          </Modal.Footer>
+        </Modal>
+      )}
+      {isModalConfirm && (
+        <Modal onClose={() => setIsModalConfirm(false)} width="w-[888px]">
+          <Modal.Header title="Apakah data diri sudah sesuai ?" />
           <Modal.Body>
             <div>
               <InputField
@@ -158,7 +171,7 @@ const Registrasi = () => {
             <Button
               isCancel
               placeholder="Kembali"
-              onClick={() => setIsModal(false)}
+              onClick={() => setIsModalConfirm(false)}
             />
             <Button
               placeholder="Daftar"
@@ -250,7 +263,7 @@ const Registrasi = () => {
             <Button
               isCancel
               placeholder="Kembali"
-              onClick={() => router.push("/")}
+              onClick={() => redirect("/")}
             />
             <Button
               placeholder="Daftar"
