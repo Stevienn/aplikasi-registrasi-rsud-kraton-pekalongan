@@ -1,5 +1,7 @@
 "use client";
 
+import dummyDoctorUmum from "@/components/assets/dummyDoctorUmum";
+
 import { getUser } from "@/api/user";
 import Card from "@/components/Card";
 import Footer from "@/components/Footer";
@@ -9,7 +11,7 @@ import React, { useEffect, useState } from "react";
 
 const PilihDokter = () => {
   const [userData, setUserData] = useState<IUser | null>(null);
-
+  const [doctorUmum, setDoctorUmum] = useState(dummyDoctorUmum);
   useEffect(() => {
     const fetchUserData = async () => {
       const data = await getUser();
@@ -18,10 +20,24 @@ const PilihDokter = () => {
     fetchUserData();
   }, []);
 
+  console.log(doctorUmum);
+
   return (
-    <div>
+    <div className="font-inria-sans">
       <Header name={userData?.user.nama} />
-      <Card />
+      <h1 className="font-bold text-[30px] ml-[45px] mt-[30px]">Dokter Umum</h1>
+      <div className="grid gap-[85px] sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-[35px] mx-[45px]">
+        {doctorUmum.map((doctor) => (
+          <Card
+            key={doctor.id}
+            image={doctor.image}
+            name={doctor.name}
+            categories={doctor.specialty}
+            schedule={doctor.schedule}
+          />
+        ))}
+      </div>
+
       <Footer isFull={true} />
     </div>
   );
