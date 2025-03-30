@@ -4,6 +4,11 @@ import Button from "./form/Button";
 import { ISchedule } from "@/interface/doctorInterface";
 import Modal from "./Modal";
 
+import _ from "lodash";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+
 interface ICardProps {
   image: string;
   categories: string;
@@ -11,17 +16,56 @@ interface ICardProps {
   schedule: {
     [key: string]: ISchedule;
   };
+  customCategoryClass: string;
 }
 
-const Card = ({ image, categories, name, schedule }: ICardProps) => {
+const Card = ({
+  image,
+  categories,
+  name,
+  schedule,
+  customCategoryClass,
+}: ICardProps) => {
   const [modalSchedule, setModalSchedule] = useState(false);
+  const [modalRegistration, setModalRegistration] = useState(false);
+
+  const today = dayjs();
+  const disabledDate = today.add(7, "day");
+
+  const ScheduleDisplay = ({ schedule }: any) => {
+    return (
+      <div className="mt-[-20px]">
+        {/* Change the object into array and map it*/}
+        {Object.entries(schedule).map(([day, details]) => (
+          <div key={day}>
+            <p className="font-semibold mt-[20px]">{_.capitalize(day)} :</p>
+            {Object.entries(details).map(([key, time]) => {
+              if (
+                time &&
+                !key.startsWith("total_jam") &&
+                !key.startsWith("pasien") //Ignore the total jam and pasien properties
+              ) {
+                return (
+                  <p key={key} className="underline">
+                    {time}
+                  </p>
+                );
+              }
+              return null;
+            })}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div id="shared-modal">
       {modalSchedule && (
-        <Modal width="500px">
+        <Modal width="w-[500px]">
           <Modal.Header title={`Jadwal Praktek ${name}`} />
           <Modal.Body>
-            <p>Jadwal Praktek</p>
+            <ScheduleDisplay schedule={schedule} />
           </Modal.Body>
           <Modal.Footer>
             <Button
@@ -31,12 +75,51 @@ const Card = ({ image, categories, name, schedule }: ICardProps) => {
           </Modal.Footer>
         </Modal>
       )}
+      {modalRegistration && (
+        <Modal width="w-[500px]">
+          <Modal.Header title={name} />
+          <Modal.Body>
+            <>
+              <p className="text-blue-primary font-semibold mb-[10px]">
+                Pilih Tanggal
+              </p>
+              <div className="mb-[6px]">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    sx={{ width: "100%" }}
+                    minDate={today}
+                    maxDate={disabledDate}
+                  />
+                </LocalizationProvider>
+              </div>
+              <p className="italic text-red-500 text-[13px] mb-[85px]">
+                *Reservasi maksimal 1 minggu ke depan dari tanggal pendaftaran
+              </p>
+            </>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              placeholder="Kembali"
+              onClick={() => setModalRegistration(false)}
+              isCancel
+              customClass="text-[14px] px-[13px] py-[10px]"
+            />
+            <Button
+              placeholder="Daftar"
+              onClick={() => alert("SABAR BANG BELUM JADI")}
+              customClass="text-[14px] px-[20px] py-[10px]"
+            />
+          </Modal.Footer>
+        </Modal>
+      )}
       <div className="shadow-2xl w-[300px] rounded-[40px] font-inria-sans">
         <div className="overflow-hidden rounded-tl-[40px] rounded-tr-[40px] max-h-[180px]">
           <Image src={image} alt="doctor" width={300} height={195} />
         </div>
         <div className="px-[33px] py-[25px]">
-          <p className="bg-gradient-to-r from-blue-tertiary to-blue-secondary text-white px-[14px] py-[7px] rounded-[27px]  max-w-[140px] flex justify-center mb-[9px]">
+          <p
+            className={`bg-gradient-to-r ${customCategoryClass} from-blue-tertiary to-blue-secondary text-white px-[15px] py-[5px] rounded-[27px] flex justify-center mb-[9px]`}
+          >
             {categories}
           </p>
           <p className="text-[20px] font-bold mb-[5px]">{name}</p>
@@ -46,7 +129,10 @@ const Card = ({ image, categories, name, schedule }: ICardProps) => {
           >
             Lihat Jadwal
           </p>
-          <p className="bg-gradient-to-r from-blue-secondary to-blue-primary text-white px-[14px] py-[7px] rounded-[27px]  max-w-[140px] flex justify-center mb-[9px] cursor-pointer">
+          <p
+            className="bg-gradient-to-r from-blue-secondary to-blue-primary text-white px-[14px] py-[7px] rounded-[27px] max-w-[140px] flex justify-center mb-[9px] cursor-pointer"
+            onClick={() => setModalRegistration(true)}
+          >
             Pilih Dokter
           </p>
         </div>

@@ -6,6 +6,7 @@ let dummyPatient = [
     birth: "05-05-2005",
     phone: "0859121393578",
     email: "chiesamutiaravictoria@gmail.com",
+    noUrut: 1,
   },
   {
     id: 78910,
@@ -14,6 +15,7 @@ let dummyPatient = [
     birth: "19-06-2003",
     phone: "087743861672",
     email: "stevenhartanto@gmail.com",
+    noUrut: null,
   },
   {
     id: 45678,
@@ -22,6 +24,7 @@ let dummyPatient = [
     birth: "15-02-2002",
     phone: "081234567890",
     email: "rizkykurniawan@gmail.com",
+    noUrut: null,
   },
   {
     id: 34567,
@@ -30,6 +33,7 @@ let dummyPatient = [
     birth: "20-01-2001",
     phone: "082345678901",
     email: "rahmanurul@gmail.com",
+    noUrut: null,
   },
   {
     id: 23456,
@@ -38,6 +42,7 @@ let dummyPatient = [
     birth: "25-12-2000",
     phone: "083456789012",
     email: "rahmadfauzi@gmail.com",
+    noUrut: null,
   },
 ];
 

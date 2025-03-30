@@ -1,5 +1,5 @@
 import CancelIcon from "@mui/icons-material/Cancel";
-import React, { JSX } from "react";
+import React, { JSX, useEffect } from "react";
 import ReactDOM from "react-dom";
 
 interface IModalWrapperProps {
@@ -34,7 +34,7 @@ const Modal = ({ children, width, onClose }: IModalProps) => {
   const sharedModal = document.querySelectorAll(`[id^="shared-modal"]`)[0];
   const [isOpen, setIsOpen] = React.useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setIsOpen(true);
   }, []);
 
@@ -59,11 +59,11 @@ interface IHeaderProps {
 
 const Header = ({ title, isCancel }: IHeaderProps) => {
   return (
-    <div className="flex bg-blue-primary justify-center">
-      <div className="py-[12px]">
+    <div className="flex items-center bg-blue-primary justify-center">
+      <div className="py-[12px] px-[20px]">
         <p className="text-light-primary font-semibold">{title}</p>
       </div>
-      {isCancel && <CancelIcon />}
+      {isCancel && <CancelIcon className="" />}
     </div>
   );
 };
