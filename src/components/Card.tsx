@@ -28,6 +28,7 @@ const Card = ({
 }: ICardProps) => {
   const [modalSchedule, setModalSchedule] = useState(false);
   const [modalRegistration, setModalRegistration] = useState(false);
+  const [date, setDate] = useState("");
 
   const today = dayjs();
   const disabledDate = today.add(7, "day");
@@ -89,6 +90,7 @@ const Card = ({
                     sx={{ width: "100%" }}
                     minDate={today}
                     maxDate={disabledDate}
+                    onChange={(newValue) => setDate(newValue)}
                   />
                 </LocalizationProvider>
               </div>

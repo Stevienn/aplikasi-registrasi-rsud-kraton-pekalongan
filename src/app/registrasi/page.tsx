@@ -27,10 +27,9 @@ const Registrasi = () => {
   const [name, setName] = useState("");
   const [bpjs, setBpjs] = useState<number>();
   const [gender, setGender] = useState("");
-  const [birth, setBirth] = useState<string>(dayjs("").format());
+  const [birth, setBirth] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-
   const [isWarningBpjs, setIsWarningBpjs] = useState("");
   const [isWarningEmail, setIsWarningEmail] = useState("");
   const [isWarningPhone, setIsWarningPhone] = useState("");
