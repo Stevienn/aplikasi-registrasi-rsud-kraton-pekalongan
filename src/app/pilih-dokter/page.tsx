@@ -34,6 +34,7 @@ const PilihDokter = () => {
             name={doctor.name}
             categories={doctor.specialty}
             schedule={doctor.schedule}
+            bpjsId={userData?.user.id}
             customCategoryClass="w-[140px]"
           />
         ))}
@@ -49,6 +50,7 @@ const PilihDokter = () => {
             name={doctor.name}
             categories={doctor.specialty}
             schedule={doctor.schedule}
+            bpjsId={userData?.user.id}
             customCategoryClass="w-[180px]"
           />
         ))}
