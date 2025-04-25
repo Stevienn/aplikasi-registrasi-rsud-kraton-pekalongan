@@ -19,10 +19,8 @@ interface ILoginPageProps {
 }
 
 const LoginPage = ({ isAdmin }: ILoginPageProps) => {
-  const router = useRouter();
-
-  const [dataPatient, setDataPatient] = useState(dummyPatient);
-  const [doctorUmum, setDoctorUmum] = useState(dummyDoctorUmum);
+  const dataPatient = dummyPatient;
+  const doctorUmum = dummyDoctorUmum;
   const [input, setInput] = useState("");
   const [validate, setValidate] = useState("");
   const [isWarningInput, setIsWarningInput] = useState("");

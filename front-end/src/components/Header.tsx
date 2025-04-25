@@ -16,7 +16,7 @@ const Header = ({ name }: { name: string | undefined }) => {
         height={19}
       />
       <h1 className="text-white text-[30px] font-inria-sans font-semibold">
-        Selamat datang, {name}
+        Selamat datang, {name} !
       </h1>
       <Button placeholder="Keluar" onClick={handleLogout} />
     </header>
