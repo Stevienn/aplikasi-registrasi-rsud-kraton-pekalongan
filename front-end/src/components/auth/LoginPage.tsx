@@ -19,10 +19,8 @@ interface ILoginPageProps {
 }
 
 const LoginPage = ({ isAdmin }: ILoginPageProps) => {
-  const router = useRouter();
-
-  const [dataPatient, setDataPatient] = useState(dummyPatient);
-  const [doctorUmum, setDoctorUmum] = useState(dummyDoctorUmum);
+  const dataPatient = dummyPatient;
+  const doctorUmum = dummyDoctorUmum;
   const [input, setInput] = useState("");
   const [validate, setValidate] = useState("");
   const [isWarningInput, setIsWarningInput] = useState("");
@@ -38,14 +36,14 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
       setIsWarningInput("No BPJS belum terdaftar !");
     } else {
       if (input == patientData.id && validate == patientData.nama) {
-        await login({ patientData });
+        await login({ userData: patientData, isDokter: false });
       } else if (input == patientData.id && validate !== patientData.nama) {
         setIsWarningValidate("Nama yang anda masukkan tidak sesuai");
       }
     }
   };
 
-  const handleValidationAdmin = (input, validate) => {
+  const handleValidationAdmin = async (input, validate) => {
     setIsWarningInput("");
     setIsWarningValidate("");
 
@@ -53,7 +51,7 @@ const LoginPage = ({ isAdmin }: ILoginPageProps) => {
 
     if (doctorData) {
       if (input == doctorData.email && validate == doctorData.password) {
-        router.push("/");
+        await login({ userData: doctorData, isDokter: true });
       } else if (
         input == doctorData.email &&
         validate !== doctorData.password

@@ -1,29 +1,59 @@
 "use client";
 
+import { getUser } from "@/api/user";
+import dummyDiagnosa from "@/components/assets/dummyDiagnosa";
 import { logout } from "@/components/auth/lib";
 import Button from "@/components/form/Button";
 import FormLayout from "@/components/form/FormLayout";
 import Modal from "@/components/Modal";
+import IDiagnosa from "@/interface/diagnosaInterface";
+import IUser from "@/interface/patientInterface";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { redirect } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Keluhan = () => {
+  const [userData, setUserData] = useState<IUser | null>(null);
   const [keluhan, setKeluhan] = useState("");
   const [already, setAlready] = useState("");
   const [modalRegistration, setModalRegistration] = useState(false);
+  const [diagnosa, setDiagnosa] = useState<IDiagnosa[]>(dummyDiagnosa);
   const [date, setDate] = useState("");
   const today = dayjs();
   const disabledDate = today.add(7, "day");
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const data = await getUser();
+      setUserData(data);
+    };
+    fetchUserData();
+  }, []);
+
   const handleLogout = async () => {
     await logout();
   };
 
   const handleRegistration = () => {
     if (already === "Sudah") {
-      redirect("/pilih-pasien");
+      const id = diagnosa.length > 0 ? diagnosa[diagnosa.length - 1].id + 1 : 1;
+      if (userData?.user.id) {
+        const newDiagnosa = {
+          id: id,
+          bpjsId: userData.user.id,
+          diagnosaDate: null,
+          keluhan: keluhan,
+          doctorName: null,
+          subjectiveDiagnosa: null,
+          primaryDiagnose: null,
+          secondaryDiagnose: null,
+        };
+        dummyDiagnosa.push(newDiagnosa);
+      }
+
+      redirect("/pilih-dokter");
     } else if (already === "Belum") {
       setModalRegistration(true);
     }

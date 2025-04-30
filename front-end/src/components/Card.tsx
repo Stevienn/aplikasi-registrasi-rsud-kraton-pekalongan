@@ -4,10 +4,14 @@ import Button from "./form/Button";
 import { ISchedule } from "@/interface/doctorInterface";
 import Modal from "./Modal";
 
+import dummyDiagnosa from "@/components/assets/dummyDiagnosa";
+
 import _ from "lodash";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import IDiagnosa from "@/interface/diagnosaInterface";
+import { redirect } from "next/navigation";
 
 interface ICardProps {
   image: string;
@@ -17,6 +21,7 @@ interface ICardProps {
     [key: string]: ISchedule;
   };
   customCategoryClass: string;
+  bpjsId: number | undefined;
 }
 
 const Card = ({
@@ -25,13 +30,42 @@ const Card = ({
   name,
   schedule,
   customCategoryClass,
+  bpjsId,
 }: ICardProps) => {
   const [modalSchedule, setModalSchedule] = useState(false);
   const [modalRegistration, setModalRegistration] = useState(false);
   const [date, setDate] = useState("");
+  const [diagnosa, setDiagnosa] = useState<IDiagnosa[]>(dummyDiagnosa);
 
   const today = dayjs();
   const disabledDate = today.add(7, "day");
+
+  console.log(diagnosa);
+
+  const handleRegistration = () => {
+    const currentDiagnosa = diagnosa.find((data) => bpjsId == data.bpjsId);
+
+    if (currentDiagnosa) {
+      const updateDiagnosa = {
+        ...currentDiagnosa,
+        diagnosaDate: date.format("DD-MM-YYYY"),
+        keluhan: currentDiagnosa.keluhan,
+        doctorName: name,
+        subjectiveDiagnosa: currentDiagnosa.subjectiveDiagnosa, // Keep existing or update
+        primaryDiagnose: currentDiagnosa.primaryDiagnose, // Keep existing or update
+        secondaryDiagnose: currentDiagnosa.secondaryDiagnose,
+      };
+      const updatedDiagnosa = diagnosa.map((data) =>
+        data.bpjsId === bpjsId ? updateDiagnosa : data
+      );
+      // UPDATE DIAGNOSA USING METHOD PUT OR POST OR PATCH IDONT KNOW
+      setDiagnosa(updatedDiagnosa);
+      console.log(diagnosa);
+      redirect("/konfirmasi");
+    } else {
+      alert("unknown error");
+    }
+  };
 
   const ScheduleDisplay = ({ schedule }: any) => {
     return (
@@ -108,7 +142,7 @@ const Card = ({
             />
             <Button
               placeholder="Daftar"
-              onClick={() => alert("SABAR BANG BELUM JADI")}
+              onClick={handleRegistration}
               customClass="text-[14px] px-[20px] py-[10px]"
             />
           </Modal.Footer>
